@@ -29,6 +29,10 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import TopIcon from './img/top-inline.svg';
 import styles from './scrollWrapper.scss';
 
+import { createContext } from 'react';
+
+export const HeaderContext = createContext();
+
 const cx = classNames.bind(styles);
 
 export class ScrollWrapper extends Component {
@@ -68,6 +72,7 @@ export class ScrollWrapper extends Component {
   };
   state = {
     showButton: false,
+    headerShouldBeSticky: false,
   };
 
   componentDidMount = () => {
@@ -122,7 +127,10 @@ export class ScrollWrapper extends Component {
     const { lastViewScrollTop, lastViewScrollLeft } = this.scrollbars;
     const { withBackToTop, onLazyLoad } = this.props;
 
-    this.setState({ showButton: withBackToTop && scrollTop > 100 });
+    this.setState({
+      showButton: withBackToTop && scrollTop > 100,
+      headerShouldBeSticky: withBackToTop && scrollTop > 55,
+    });
 
     if (onLazyLoad !== false && top > 0.9) {
       onLazyLoad();
@@ -168,6 +176,13 @@ export class ScrollWrapper extends Component {
             <FormattedMessage id="ScrollWrapper.backToTop" defaultMessage="Back to top" />
           </button>
         )}
+        <HeaderContext.Provider value={this.state.headerShouldBeSticky}>
+          {this.state.headerShouldBeSticky ? (
+            <p>headerShouldBeSticky: TRUEEE</p>
+          ) : (
+            <p>headerShouldBeSticky:FALSEEE</p>
+          )}
+        </HeaderContext.Provider>
       </Scrollbars>
     );
   }

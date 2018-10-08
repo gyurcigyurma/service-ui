@@ -5,7 +5,18 @@ import { HeaderCell } from './headerCell';
 import { CheckboxHeaderCell } from './checkboxHeaderCell';
 import styles from './gridHeader.scss';
 
+import { HeaderContext } from '../../scrollWrapper/scrollWrapper';
+
 const cx = classNames.bind(styles);
+
+const divStyle = {
+  color: 'red',
+  position: 'fixed',
+  backgroundColor: 'cyan',
+  width: '200px',
+  WebkitTransition: 'all', // note the capital 'W' here
+  msTransition: 'all', // 'ms' is the only lowercase vendor prefix
+};
 
 export const GridHeader = ({
   columns,
@@ -18,24 +29,17 @@ export const GridHeader = ({
   onToggleSelectAll,
   hideHeaderForMobile,
 }) => (
-  <div className={cx('grid-header', { 'mobile-hide': hideHeaderForMobile })}>
-    {columns.map((column, i) => (
-      <HeaderCell
-        key={column.id || i}
-        title={column.title}
-        align={column.align}
-        sortable={column.sortable}
-        id={column.id}
-        withFilter={column.withFilter}
-        sortingDirection={sortingDirection}
-        sortingActive={sortingColumn === column.id}
-        onChangeSorting={onChangeSorting}
-        onFilterClick={onFilterClick}
-      />
-    ))}
-    {selectable && <CheckboxHeaderCell value={allSelected} onChange={onToggleSelectAll} />}
-  </div>
+  <HeaderContext.Consumer>
+    {(headerShouldBeSticky) =>
+      headerShouldBeSticky ? (
+        <p style={divStyle}>NOW IT SHOULD BE STICKY</p>
+      ) : (
+        <p style={divStyle}>NOT STICKY</p>
+      )
+    }
+  </HeaderContext.Consumer>
 );
+
 GridHeader.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(columnPropTypes)),
   sortingColumn: PropTypes.string,
